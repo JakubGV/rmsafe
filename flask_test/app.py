@@ -59,6 +59,13 @@ def get_video_label(video,extension):
     return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
     # return f"The model is  {confidence * 100:.1f}% sure the label is: {result}"
 
+@app.route("/testing", methods=['GET'])
+def testing():
+    return render_template('test.html')
+
+@app.route("/about", methods=['GET'])
+def about():
+    return render_template('about.html')
 
 @app.route("/test", methods=['GET'])
 def test():
