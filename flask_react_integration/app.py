@@ -1,6 +1,6 @@
 # Imports
 import os
-from flask import Flask, redirect, url_for,flash, request, redirect,url_for, render_template
+from flask import Flask, redirect, send_from_directory, url_for,flash, request, redirect,url_for, render_template
 from camera_model import CameraModel
 from werkzeug.utils import secure_filename
 
@@ -11,7 +11,8 @@ UPLOAD_FOLDER = os.path.join(curr_dir, 'uploads')
 ALLOWED_EXTENSIONS = {'mp4', 'mov','wmv', 'flv'}
 
 # Initializations
-app = Flask(__name__)
+# app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 app.config["DEBUG"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -23,7 +24,7 @@ def allowed_file(filename):
 # Define API resources
 @app.route("/")
 def home():
-    return render_template('index.html')
+    return send_from_directory(app.static_folder,'index.html')
 
 @app.route("/upload", methods=['POST'])
 def upload():
@@ -56,7 +57,8 @@ def get_video_label(video,extension):
     result, confidence = camera_model.evaluate(video_file)
     print(result)
     confidence = f'{confidence * 100:.1f}'
-    return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
+    return {"result": str(result), "confidence":confidence}
+    # return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
     # return f"The model is  {confidence * 100:.1f}% sure the label is: {result}"
 
 @app.route("/testing", methods=['GET'])
