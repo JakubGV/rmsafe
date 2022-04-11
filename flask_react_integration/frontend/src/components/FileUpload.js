@@ -1,38 +1,64 @@
+import  Button  from "react-bootstrap/Button";
 import React, { useState } from "react";
+//import { getVideoLabel } from "./APIService";
 
 function FileUpload() {
   const [label, setLabel] = useState("null");
+  const [confidence, setConfidence] = useState("null");
+  const [results, setResults] = useState(false);
+  // const handleSubmit = (event)
+  const [filename, setFilename] = useState("")
+  const [video,setVideo] = useState("")
+  const [extension, setExtension] = useState("")
+  const handleChange =(event) => {
+    var name = event.target.files[0].name
+    setFilename(name);
+    
+    setVideo(name.split('.')[0]);
+    setExtension(name.split('.')[1]);
+  }
+  const handleclick = ()=>{
+    const URL = `http://localhost:5000/getlabel/${video}/${extension}`;
+    
+    fetch(URL, { method: 'GET' } )
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.result && data.confidence) {
+            setLabel(data.result === "1" ? "Falling": "IDLE");
+            setConfidence(data.confidence);
+            setResults(true);
+          }
+        })
+        .catch(error => { alert(`Error fetching: ${error}`); });
+    
+    /*
+    let data = getVideoLabel(video,extension);
+    console.log(data); */
+  }
   return (
-    // <div className="input-group">
-    //   <div className="input-group-prepend">
-    //     <span className="input-group-text" id="inputGroupFileAddon01">
-    //       Upload
-    //     </span>
-    //   </div>
-    //   <div className="custom-file">
-    //     <input
-    //       type="file"
-    //       className="custom-file-input"
-    //       id="inputGroupFile01"
-    //       aria-describedby="inputGroupFileAddon01"
-    //     />
-    //     <label className="custom-file-label" htmlFor="inputGroupFile01">
-    //       Choose file
-    //     </label>
-    //   </div>
-    // </div>
+    
     <div>
     <form method="post" action="http://localhost:5000/upload" enctype="multipart/form-data">
       <dl>
         <p>
-          <input type="file" name="file" autocomplete="off" required />
+          <input type="file" name="file" autocomplete="off" onChange={handleChange} required />
+          
         </p>
-      </dl>
-      <p>
-        <input type="submit" value="Submit" />
+        <p>
+        <input type="submit" value="Submit" /> 
       </p>
+      </dl>
+      
     </form>
+    <Button onClick={handleclick}>Get Label</Button>
+    {/* <div>{filename} <br></br>{video} <br/>{extension}</div> */}
+    {/* <Button onClick>Classify Video</Button> */}
+    {
+      results &&
+      <h1>The model is {confidence} confident the person is {label}</h1>
+    }
   </div>
+
   );
 }
 

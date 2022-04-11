@@ -49,4 +49,4 @@ class CameraModel:
         label_num = nd.topk(pred)[0].astype('int')
         confidence = nd.softmax(pred)[0][label_num[0]].asscalar()
 
-        return label_num[0], confidence
+        return label_num[0].asscalar(), confidence

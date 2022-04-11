@@ -1,15 +1,12 @@
-export default class APIService{
-    // Insert an article
-    static getAbout(body){
-        return fetch(`http://localhost:5000/upload`,{
-            'method':'POST',
-             headers : {
-            'Content-Type':'application/json'
-      },
-      body:JSON.stringify(body)
-    })
+export async function getVideoLabel(video, extenstion) {
+  var url = `http://localhost:5000/getlabel/${video}/${extenstion}`;
+    var receivedData = {};
+  fetch(url)
     .then(response => response.json())
-    .catch(error => console.log(error))
-    }
+    .then(data => {
+        console.log(data);
+      receivedData = data;
+    });
 
+  return receivedData;
 }

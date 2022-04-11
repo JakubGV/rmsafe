@@ -21,8 +21,8 @@ function App() {
 <script>var Alert = ReactBootstrap.Alert;</script>
       <CustomNavbar/>
       <br></br>
-      <FileUpload/>
-      {/* <About/> */}
+      {/* <FileUpload/> */}
+      <About/>
     </div>
   );
 }

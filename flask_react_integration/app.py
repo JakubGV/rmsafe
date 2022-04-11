@@ -1,6 +1,8 @@
 # Imports
+import json
 import os
-from flask import Flask, redirect, send_from_directory, url_for,flash, request, redirect,url_for, render_template
+from flask import Flask, jsonify, redirect, send_from_directory, url_for,flash, request, redirect,url_for, render_template, make_response
+from flask_cors import CORS
 from camera_model import CameraModel
 from werkzeug.utils import secure_filename
 
@@ -13,6 +15,7 @@ ALLOWED_EXTENSIONS = {'mp4', 'mov','wmv', 'flv'}
 # Initializations
 # app = Flask(__name__)
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+CORS(app)
 app.config["DEBUG"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -47,17 +50,20 @@ def upload():
             filename = secure_filename(file.filename)
             print(filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
-            return redirect(url_for('get_video_label', video=filename.split('.')[0],extension=filename.split('.')[1]))
+            return 200
+            # return redirect(url_for('get_video_label', video=filename.split('.')[0],extension=filename.split('.')[1]))
         return "Video post method" 
 
 @app.route("/getlabel/<video>/<extension>", methods=['GET'])
 def get_video_label(video,extension):
     video_file = os.path.join(curr_dir, 'uploads', f'{video}.{extension}')
     result, confidence = camera_model.evaluate(video_file)
-    print(result)
+    print()
     confidence = f'{confidence * 100:.1f}'
-    return {"result": str(result), "confidence":confidence}
+    response = {"result": str(result), "confidence":confidence}
+    print(response)
+    return jsonify(response)
+    # return jsonify()
     # return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
     # return f"The model is  {confidence * 100:.1f}% sure the label is: {result}"
 
