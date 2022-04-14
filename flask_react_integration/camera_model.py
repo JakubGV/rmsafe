@@ -17,10 +17,12 @@ class CameraModel:
     }
 
     def __init__(self, param_file: str): # Load model with the parameters from parameter_file
-        self.decord = try_import_decord()
+        self._decord = try_import_decord()
+        self._ctx = mx.gpu(0)
         with HiddenPrints():
             self.net = get_model(name='i3d_resnet50_v1_custom', nclass=2)
-            self.net.load_parameters(param_file)
+            self.net.collect_params().reset_ctx(self._ctx)
+            self.net.load_parameters(param_file, ctx=self._ctx)
 
     def get_class(self, label_num: int) -> str: # return the string label of a number class
         if label_num in self.__classes:
@@ -30,9 +32,14 @@ class CameraModel:
 
     def _preprocess(self, video_file): # preprocess the video for running
         # pretend here that `video_file` is a path to a video
-        random_frame = randrange(0, 16)
-        vr = self.decord.VideoReader(video_file)
-        frame_id_list = range(random_frame, random_frame + 64, 2)
+        vr = self._decord.VideoReader(video_file)
+        num_frames = len(vr)
+        print(num_frames)
+        middle_frame = num_frames // 2 # Choose the middle frames
+        if middle_frame - 32 < 0 or middle_frame + 32 > num_frames:
+            frame_id_list = range(middle_frame - 16, middle_frame + 16, 1) # grab 32 frames, choosing every frame
+        else:
+            frame_id_list = range(middle_frame - 32, middle_frame + 32, 2) # grab 32 frames, choosing every other frame
         video_data = vr.get_batch(frame_id_list).asnumpy()
         clip_input = [video_data[vid, :, :, :] for vid, _ in enumerate(frame_id_list)]
         transform_fn = video.VideoGroupValTransform(size=224, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -45,7 +52,7 @@ class CameraModel:
     
     def evaluate(self, video_file): # Run the model on the video passed and return a label
         clip_input = self._preprocess(video_file)
-        pred = self.net(nd.array(clip_input))
+        pred = self.net(nd.array(clip_input).as_in_context(self._ctx))
         label_num = nd.topk(pred)[0].astype('int')
         confidence = nd.softmax(pred)[0][label_num[0]].asscalar()
 

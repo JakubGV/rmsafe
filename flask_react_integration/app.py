@@ -1,5 +1,4 @@
 # Imports
-import json
 import os
 from flask import Flask, jsonify, redirect, send_from_directory, url_for,flash, request, redirect,url_for, render_template, make_response
 from flask_cors import CORS
@@ -13,8 +12,8 @@ UPLOAD_FOLDER = os.path.join(curr_dir, 'uploads')
 ALLOWED_EXTENSIONS = {'mp4', 'mov','wmv', 'flv'}
 
 # Initializations
-# app = Flask(__name__)
-app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+app = Flask(__name__)
+#app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 CORS(app)
 app.config["DEBUG"] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -27,7 +26,7 @@ def allowed_file(filename):
 # Define API resources
 @app.route("/")
 def home():
-    return send_from_directory(app.static_folder,'index.html')
+    return 'RMSafe server loaded'
 
 @app.route("/upload", methods=['POST'])
 def upload():
@@ -50,8 +49,10 @@ def upload():
             filename = secure_filename(file.filename)
             print(filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return 200
-            # return redirect(url_for('get_video_label', video=filename.split('.')[0],extension=filename.split('.')[1]))
+            #return 200
+            #return redirect(url_for('get_video_label', video=filename.split('.')[0],extension=filename.split('.')[1]))
+            app.logger.info('%s was uploaded', filename)
+            return '', 204
         return "Video post method" 
 
 @app.route("/getlabel/<video>/<extension>", methods=['GET'])
@@ -67,6 +68,7 @@ def get_video_label(video,extension):
     # return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
     # return f"The model is  {confidence * 100:.1f}% sure the label is: {result}"
 
+"""
 @app.route("/testing", methods=['GET'])
 def testing():
     return render_template('test.html')
@@ -74,6 +76,7 @@ def testing():
 @app.route("/about", methods=['GET'])
 def about():
     return render_template('about.html')
+"""
 
 @app.route("/test", methods=['GET'])
 def test():
