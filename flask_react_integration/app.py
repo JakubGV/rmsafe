@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 curr_dir = os.path.dirname(__file__)
 param_file = os.path.join(curr_dir, 'params', 'model_07_epochs.params')
-camera_model = CameraModel(param_file)
+camera_model = CameraModel(param_file, False)
 UPLOAD_FOLDER = os.path.join(curr_dir, 'uploads')
 ALLOWED_EXTENSIONS = {'mp4', 'mov','wmv', 'flv'}
 
@@ -49,8 +49,6 @@ def upload():
             filename = secure_filename(file.filename)
             print(filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            #return 200
-            #return redirect(url_for('get_video_label', video=filename.split('.')[0],extension=filename.split('.')[1]))
             app.logger.info('%s was uploaded', filename)
             return '', 204
         return "Video post method" 
@@ -64,19 +62,8 @@ def get_video_label(video,extension):
     response = {"result": str(result), "confidence":confidence}
     print(response)
     return jsonify(response)
-    # return jsonify()
     # return render_template('result.html', result=str(result).split('<')[0], confidence=confidence )
     # return f"The model is  {confidence * 100:.1f}% sure the label is: {result}"
-
-"""
-@app.route("/testing", methods=['GET'])
-def testing():
-    return render_template('test.html')
-
-@app.route("/about", methods=['GET'])
-def about():
-    return render_template('about.html')
-"""
 
 @app.route("/test", methods=['GET'])
 def test():
