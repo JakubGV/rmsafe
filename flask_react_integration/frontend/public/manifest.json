@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "RMSafe",
+  "name": "RMSafe: Remote Monitoring Safety System",
   "icons": [
     {
       "src": "favicon.ico",

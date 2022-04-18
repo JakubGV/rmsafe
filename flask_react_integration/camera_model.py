@@ -16,9 +16,9 @@ class CameraModel:
         1: 'falling'
     }
 
-    def __init__(self, param_file: str): # Load model with the parameters from parameter_file
+    def __init__(self, param_file: str, use_gpu: bool): # Load model with the parameters from parameter_file
         self._decord = try_import_decord()
-        self._ctx = mx.gpu(0)
+        self._ctx = mx.gpu(0) if use_gpu else mx.cpu()
         with HiddenPrints():
             self.net = get_model(name='i3d_resnet50_v1_custom', nclass=2)
             self.net.collect_params().reset_ctx(self._ctx)
