@@ -3,14 +3,11 @@
 #include <Wire.h>
 
 Adafruit_MPU6050 mpu;
-
 const int buttonPin = 3;
 const int alarmPin = 10;
 const bool alarmFlag = false;
+
 void setup() {
-  
-  
-  
   Serial.begin(115200);
   pinMode(buttonPin, INPUT);
   // Try to initialize!
@@ -37,7 +34,8 @@ void loop() {
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
   bool alarmFlag = false;
-  /* Print out the values */
+  /* Print all values */
+  /*
   Serial.print(a.acceleration.x);
   Serial.print(",");
   Serial.print(a.acceleration.y);
@@ -49,14 +47,27 @@ void loop() {
   Serial.print(g.gyro.y);
   Serial.print(",");
   Serial.print(g.gyro.z);
-  Serial.println("");
+  Serial.println(""); */
+
+  /* Print production values */
+  Serial.print(a.acceleration.x);
+  Serial.print(",");
+  Serial.print(a.acceleration.y);
+  Serial.print(",");
+  Serial.println(a.acceleration.z);
+  
   if(abs(a.acceleration.z) > 70 || abs(a.acceleration.y) > 70 || abs(a.acceleration.x) > 70){
     alarmFlag = true;
     delay(100);
   }
-  delay(10);
+  delay(125);
   while(alarmFlag == true){
-    //buttonPin = 3;
+    Serial.print(a.acceleration.x);
+    Serial.print(",");
+    Serial.print(a.acceleration.y);
+    Serial.print(",");
+    Serial.println(a.acceleration.z);
+    
     int buttonState;
     buttonState = digitalRead(buttonPin);
     if(buttonState == LOW){
