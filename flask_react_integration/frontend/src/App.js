@@ -19,6 +19,7 @@ function App() {
         src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
         crossorigin
       ></script>
+      <script src="canvasjs/dist/canvasjs.js"></script>
       <script>var Alert = ReactBootstrap.Alert;</script>
       <CustomNavbar />
       <div className="page-container">

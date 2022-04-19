@@ -2,6 +2,8 @@ import Button from "react-bootstrap/Button";
 import React, { useState } from "react";
 //import { getVideoLabel } from "./APIService";
 
+import './FileUpload.css';
+
 function FileUpload() {
   const [label, setLabel] = useState("null");
   const [confidence, setConfidence] = useState("null");
@@ -10,6 +12,7 @@ function FileUpload() {
   // const [filename, setFilename] = useState("")
   const [video, setVideo] = useState("");
   const [extension, setExtension] = useState("");
+  
   const handleChange = (event) => {
     var name = event.target.files[0].name;
     // setFilename(name);
@@ -17,6 +20,7 @@ function FileUpload() {
     setVideo(name.split(".")[0]);
     setExtension(name.split(".")[1]);
   };
+  
   const handleclick = () => {
     const URL = `http://localhost:5000/getlabel/${video}/${extension}`;
 
@@ -24,7 +28,7 @@ function FileUpload() {
       .then((response) => response.json())
       .then((data) => {
         if (data && data.result && data.confidence) {
-          setLabel(data.result === "1" ? "Falling" : "IDLE");
+          setLabel(data.result === "1" ? "Falling" : "Idle");
           setConfidence(data.confidence);
           setResults(true);
         }
@@ -38,7 +42,7 @@ function FileUpload() {
     console.log(data); */
   };
   return (
-    <div>
+    <div className="file-upload">
       <form
         method="post"
         action="http://localhost:5000/upload"
@@ -55,7 +59,7 @@ function FileUpload() {
             />
           </p>
           <p>
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Upload" />
           </p>
         </dl>
       </form>
@@ -64,7 +68,7 @@ function FileUpload() {
       {/* <Button onClick>Classify Video</Button> */}
       {results && (
         <h1>
-          The model is {confidence} confident the person is {label}
+          The model is {confidence}% confident the person is {label}
         </h1>
       )}
     </div>
