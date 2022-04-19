@@ -1,6 +1,6 @@
 # Imports
 from random import randrange
-from hidden_prints import HiddenPrints
+from flaskr.hidden_prints import HiddenPrints
 import numpy as np
 import mxnet as mx
 from mxnet import gluon, nd, image
