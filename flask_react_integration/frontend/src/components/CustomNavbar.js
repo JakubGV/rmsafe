@@ -17,7 +17,9 @@ function CustomNavbar() {
             <Link to="/testing">
               <Nav.Link href="/testing">Testing</Nav.Link>
             </Link>
-
+            <Link to="/livefeed">
+              <Nav.Link href="/livefeed">Live Feed</Nav.Link>
+            </Link>
             <Link to="/faqs">
               <Nav.Link href="/faqs">FAQs</Nav.Link>
             </Link>
