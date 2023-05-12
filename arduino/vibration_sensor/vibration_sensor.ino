@@ -56,7 +56,7 @@ void loop() {
   Serial.print(",");
   Serial.println(a.acceleration.z);
   
-  if(abs(a.acceleration.z) > 70 || abs(a.acceleration.y) > 70 || abs(a.acceleration.x) > 70){
+  if(abs(a.acceleration.z) > 30 || abs(a.acceleration.y) > 30 || abs(a.acceleration.x) > 30){
     alarmFlag = true;
     delay(100);
   }
